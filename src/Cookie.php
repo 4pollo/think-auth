@@ -12,7 +12,8 @@ class Cookie
     public static function get($key)
     {
         if (is_null(self::$instance)) {
-            self::$instance = new VanillaCookie(new DefaultEncrypter($key));
+            //self::$instance = new VanillaCookie(new DefaultEncrypter($key));
+            self::$instance = new VanillaCookie();
         }
 
         return self::$instance;

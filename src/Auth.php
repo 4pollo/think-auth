@@ -27,7 +27,7 @@ class Auth
     protected static function getConfig($key, $default = '')
     {
         if (is_null(self::$_config)) {
-            if (Config::has('auth')) {
+            if (!Config::has('auth')) {
                 throw new \Exception('no config information.');
             }
 
