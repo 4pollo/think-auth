@@ -1,6 +1,7 @@
 <?php
 namespace Qsnh\think\Auth;
 
+use think\Cookie;
 use think\Config;
 use think\helper\Hash;
 
@@ -48,7 +49,7 @@ class Auth
     public static function check()
     {
         if (is_null(self::$user)) {
-            $cookie = Cookie::get(self::getConfig('safe_key'))->get(self::getCookieName());
+            $cookie = Cookie::get(self::getCookieName());
 
             if (is_null($cookie)) {
                 return false;
@@ -147,7 +148,7 @@ class Auth
         $where = $data;
 
         if (self::getConfig('is_hash') == true && array_key_exists('password', $where)) {
-            unset($where);
+            unset($where['password']);
         }
 
         $model = self::getConfig('model');
@@ -177,16 +178,16 @@ class Auth
         self::$user = $user;
 
         /** 保存凭据 */
-        $expires = $remember ? 24*60*30 : 60;
+        $expires = $remember ? 24*30*3600 : 3600;
 
-        Cookie::get(self::getConfig('safe_key'))->store(
-            self::getCookieName(),
+        Cookie::set([
+        	self::getCookieName(),
             json_encode([
                 'id'   => $user->id,
                 'sign' => self::getUserSign($user)
             ]),
             $expires
-        );
+        ]);
 
         return true;
     }
@@ -232,7 +233,7 @@ class Auth
      */
     public static function logout()
     {
-        Cookie::get(self::getConfig('safe_key'))->delete(self::getCookieName());
+    	Cookie::delete(self::getCookieName());
 
         return true;
     }
