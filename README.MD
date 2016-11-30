@@ -26,7 +26,7 @@ $table->addColumn('username', 'string', ['limit' => 32])
 
 
 ### Configure information
-1.Create the auth.php file in the `application/extra` directory,as follows:
+1.Create the `auth.php` file in the `application/extra` directory,as follows:
 ~~~
 <?php
 return [
@@ -53,7 +53,7 @@ Auth::loginByUserId($id);
 /** login on app by user model */
 Auth::login(think\Model $user);
 
-/** login on app by   */
+/** login on app by array  */
 Auth::attemp(array $credential, $remember = false);
 
 /** Get logged-in user */
