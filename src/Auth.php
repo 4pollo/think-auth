@@ -49,13 +49,11 @@ class Auth
     public static function check()
     {
         if (is_null(self::$user)) {
-            $cookie = Cookie::get(self::getCookieName());
+            $credentials = Cookie::get(self::getCookieName());
 
-            if (is_null($cookie)) {
+            if (is_null($credentials)) {
                 return false;
             }
-
-            $credentials = json_decode($cookie, true);
 
             if (!isset($credentials['id']) || !isset($credentials['sign'])) {
                 return false;
@@ -117,7 +115,7 @@ class Auth
      * @param think\Model $user
      * @return mixed
      */
-    public function login($user)
+    public static function login($user)
     {
         return self::loginSuccess($user);
     }
@@ -163,6 +161,10 @@ class Auth
             return $user;
         }
 
+        if (!isset($data['password'])) {
+        	return $user;
+        }
+
         /** Hash加密需要额外判断 */
         return Hash::check($data['password'], $user->password) ? $user : false;
     }
@@ -180,14 +182,14 @@ class Auth
         /** 保存凭据 */
         $expires = $remember ? 24*30*3600 : 3600;
 
-        Cookie::set([
+        Cookie::set(
         	self::getCookieName(),
-            json_encode([
+            [
                 'id'   => $user->id,
                 'sign' => self::getUserSign($user)
-            ]),
+            ],
             $expires
-        ]);
+        );
 
         return true;
     }
